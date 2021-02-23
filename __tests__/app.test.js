@@ -189,5 +189,99 @@ describe('app routes', () => {
       expect(data.body).toEqual(expectation);
     });
 
+    test('creates a new tea item and checks to see if it was added to database', async() => {
+
+      const newTea = 
+        {
+          name: 'Huang Pian',
+          image: 'gardenia.jpg',
+          description: 'farmer select',
+          category: 'Oolong',
+          price: 15,
+          aged: false,
+
+        };
+
+      const expectation = {
+        ...newTea,
+        id: 10,
+        owner_id: 1
+      };
+
+      const data = await fakeRequest(app)
+        .post('/teas')
+        .send(newTea)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectation);
+
+      const allTeas = await fakeRequest(app)
+        .get('/teas')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const huangPian = allTeas.body.find(tea => tea.name === 'Huang Pian');
+      expect(huangPian).toEqual(expectation);
+    });
+
+    test('updates an existing tea item', async() => {
+
+      const updatTea = 
+        {
+          name: 'Bingdao Mountain',
+          image: 'bingdao.jpg',
+          description: 'strawberry, bamboo shoots, beeswax',
+          category: 'Pu\'erh',
+          price: 50,
+          aged: true,
+
+        };
+
+      const expectation = {
+        ...updatTea,
+        id: 9,
+        owner_id: 1
+      };
+
+      await fakeRequest(app)
+        .put('/teas/9')
+        .send(updatTea)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const revisedBingdao = await fakeRequest(app)
+        .get('/teas/9')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(revisedBingdao.body).toEqual(expectation);
+    });
+    test('deletes a tea item', async() => {
+      const expectation = {
+        id: 10,
+        name: 'Huang Pian',
+        image: 'gardenia.jpg',
+        description: 'farmer select',
+        category: 'Oolong',
+        price: 15,
+        aged: false,
+        owner_id: 1
+      };
+
+      const data = await fakeRequest(app)
+        .delete('/teas/10')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectation);
+
+      const noTeas = await fakeRequest(app)
+        .get('/teas/10')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(noTeas.body).toEqual('');
+    });
   });
 });
