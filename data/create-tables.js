@@ -16,17 +16,21 @@ async function run() {
                     id SERIAL PRIMARY KEY,
                     email VARCHAR(256) NOT NULL,
                     hash VARCHAR(512) NOT NULL
-                );           
+                );      
+                CREATE TABLE categories (
+                  id SERIAL PRIMARY KEY NOT NULL,
+                  name VARCHAR(512) NOT NULL
+                );     
                 CREATE TABLE teas (
                     id SERIAL PRIMARY KEY NOT NULL,
                     name VARCHAR(512) NOT NULL,
                     image VARCHAR(512) NOT NULL,
                     description VARCHAR(512) NOT NULL,
-                    category VARCHAR(512) NOT NULL,
+                    category_id INTEGER NOT NULL REFERENCES categories(id),
                     price INTEGER NOT NULL,
                     aged BOOLEAN,
                     owner_id INTEGER NOT NULL REFERENCES users(id)
-            );
+                )
         `);
 
     console.log('create tables complete', getEmoji(), getEmoji(), getEmoji());
