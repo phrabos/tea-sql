@@ -201,6 +201,39 @@ describe('app routes', () => {
       expect(data.body).toEqual(expectation);
     });
 
+    test('returns all teas with category of Yancha', async() => {
+
+      const expectation = [
+        {
+          'id': 1,
+          'name': 'Yancha',
+        },
+        {
+          'id': 2,
+          'name': 'Taiwanese Oolong',
+        },
+        {
+          'id': 3,
+          'name': 'Dancong',
+        },
+        {
+          'id': 4,
+          'name': 'Rolled Oolong',
+        },
+        {
+          'id': 5,
+          'name': 'Pu\'erh',
+        },
+      ];
+
+      const data = await fakeRequest(app)
+        .get('/categories')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectation);
+    });
+
     test('creates a new tea item and checks to see if it was added to database', async() => {
       const newTea = 
       {
